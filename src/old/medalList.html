@@ -1,0 +1,32 @@
+﻿<ion-view view-title="Mes médailles" cache-view="false">
+    <ion-content scrollbar-y="false">
+        <ion-slide-box does-continue="true" auto-play="false" style="min-height:100%;">
+            <ion-slide ng-repeat="medal in medals" style="min-height:100%;">
+                <div class="box" style="min-height:100%;">
+                    <div class="row">
+                        <h1>{{medal.name}}</h1>
+                    </div>
+                    <div class="row">
+                        <img class="col col-offset-25 col-50" style="width:100%;height:100%;" src="data:image/jpeg;base64,{{medal.image}}" 
+                             on-tap="showMedal({{medal.id}})"/>
+                    </div>
+                    <div class="row">
+                        <p>{{medal.description}}</p>
+                    </div>
+                </div>
+            </ion-slide>
+        </ion-slide-box>
+    </ion-content>
+</ion-view>
+
+<script id="zoom.html" type="text/ng-template">
+    <ion-modal-view>
+        <div class="modal-background"></div>
+        <ion-content class="padding transparent" scrollbar-x="false" scrollbar-y="false">
+            <ion-scroll direction="xy" scrollbar-x="false" scrollbar-y="false" overflow-scroll="false"
+                zooming="true" min-zoom="1" style="width: 100%; height: 100%;" locking="false" class="transparent">
+                    <img src="data:image/jpeg;base64,{{zoomMedal.image}}" class="fullscreen-image transparent" on-double-tap="resetZoom()" />
+            </ion-scroll>
+        </ion-content>
+    </ion-modal-view>
+</script>
