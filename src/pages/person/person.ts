@@ -11,4 +11,8 @@ export class PersonPage {
 
   }
 
+  save() {
+    alert('save')
+  }
+
 }
