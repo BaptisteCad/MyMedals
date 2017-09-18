@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
+// Models
+import { Owner } from '../models/owner'
+
 const DATABASE_NAME: string = "myMedals.db";
 
 @Injectable()
@@ -13,11 +16,13 @@ export class DataService {
     private db: SQLiteObject;
 
     private CreateDataBase(): void {
+        console.log('Create DB');
         this.sqlite.create({
             name: DATABASE_NAME,
             location: 'default'
         })
         .then((db: SQLiteObject) => {
+            console.log('DB created.');
             this.db = db;
             this.InitializeDataBase();
         })
@@ -137,7 +142,7 @@ export class DataService {
         .catch(e => console.log(e));
     };
     
-    private GetAllOwners(): object {
+    public GetAllOwners(): Owner[] {
         this.db.executeSql('SELECT * FROM owner', {})
         .then((result) => {
             if (result == null){
@@ -189,7 +194,7 @@ export class DataService {
         return;
     };
 
-    private AddOwner(lastname: string, firstname: string, description: string, gender: number, father: number, mother: number): void {
+    public AddOwner(lastname: string, firstname: string, description: string, gender: number, father: number, mother: number): void {
         this.db.executeSql('INSERT INTO owner (own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) values (?,?,?,?,?,?)', {lastname, firstname, description, gender, father, mother})
         .then()
         .catch(e => console.log(e));

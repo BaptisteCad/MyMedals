@@ -5,6 +5,12 @@
 </ion-header>
   
 <ion-content padding>
+    <ion-list ng-if="owners">
+        <ion-item *ngFor="let owner of owners">
+            {{owner.firstname owner.lastname}}
+        </ion-item>
+    </ion-list>
+
     <h2>Ajouter une personne</h2>
 
     <ion-list>
