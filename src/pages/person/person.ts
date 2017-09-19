@@ -17,6 +17,8 @@ export class PersonPage {
   newOwner: Owner;
 
   constructor(public navCtrl: NavController, public service: DataService) {
+    this.newOwner = new Owner();
+    this.getOwners();
   }
 
   save() {
@@ -28,6 +30,7 @@ export class PersonPage {
       this.newOwner.father,
       this.newOwner.mother
     )
+    this.getOwners();
   }
 
   getOwners() {
