@@ -9,36 +9,111 @@ const DATABASE_NAME: string = "myMedals.db";
 @Injectable()
 export class DataService {
 
-    constructor (private sqlite: SQLite) {
-        this.CreateDataBase();
+    private db: SQLiteObject;
+    databaseCreated: Promise<void>;
+
+    constructor (public sqlite: SQLite) {
+        this.CreateDataBase()
     };
 
-    private db: SQLiteObject;
-
-    private CreateDataBase(): void {
-        alert('test');
+    private CreateDataBase(): Promise<void> {
         console.log('Create DB');
-        this.sqlite.create({
+        return this.sqlite.create({
             name: DATABASE_NAME,
             location: 'default'
         })
         .then((db: SQLiteObject) => {
-            console.log('DB created.');
             this.db = db;
-            this.InitializeDataBase();
+            return this.InitializeDataBase();
         })
+        .then(() => console.log('Created SQL'))
         .catch(e => console.log(e));
     };
 
     private InitializeDataBase(): void {
-        this.db.executeSql('CREATE TABLE IF NOT EXISTS medals (med_id integer primary key autoincrement, med_name text, med_description text, med_image blob, med_owner integer)', {})
-        .then(() => {
-            console.log('Table Medals created');
-            this.db.executeSql('CREATE TABLE IF NOT EXISTS owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer)',{})
+        this.sqlite.create({
+            name: DATABASE_NAME,
+            location: 'default'
+        })
+        .then((db) => {
+            db.executeSql('CREATE TABLE IF NOT EXISTS medals (med_id integer primary key autoincrement, med_name text, med_description text, med_image blob, med_owner integer)', {})
             .then(() => {
-                console.log('Table Owners created');
+                console.log('Table Medals created');
+                alert('Table Medals created');
+                db.executeSql('CREATE TABLE IF NOT EXISTS owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer)',{})
+                .then(() => {
+                    console.log('Table Owners created');
+                    alert('Table Owners created');
+                })
+                .catch(e => console.log(e));        
             })
-            .catch(e => console.log(e));        
+            .catch(e => console.log(e));
+        })
+        .catch(e => console.log(e));
+    };
+
+    public GetAllOwners(): Promise<Owner[]> {
+        return new Promise((resolve, reject) => {
+            this.sqlite.create({name: DATABASE_NAME, location: 'default'}).then(
+                (teste) => {
+                    teste.executeSql("select * from owners", {}).then(
+                        (result) => {
+                            var owners = [];
+                            for (var i = 0; i < result.rows.length; i++) {
+                                var owner = {
+                                    id: result.rows.item(i).own_id,
+                                    lastname: result.rows.item(i).own_lastname,
+                                    firstname: result.rows.item(i).own_firstname,
+                                    description: result.rows.item(i).own_description,
+                                    gender: result.rows.item(i).own_gender,
+                                    mother: result.rows.item(i).own_mother ? result.rows.item(i).own_mother : 0,
+                                    father: result.rows.item(i).own_father ? result.rows.item(i).own_father : 0
+                                };
+                                owners.push(owner);
+                            }
+                            alert('db owners' + owners.toString());
+                            resolve(owners);
+                        }
+                    )
+                }
+            );
+        });
+
+
+
+
+        // this.sqlite.create({
+        //     name: DATABASE_NAME,
+        //     location: 'default'
+        // })
+        // .then((db) =>{
+        //     db.executeSql('SELECT * FROM owner', {})
+        // })
+        // .then((result) => {
+        //     var owners = [];
+        //     for (var i = 0; i < result.rows.length; i++) {
+        //         var owner = {
+        //             id: result.rows.item(i).own_id,
+        //             lastname: result.rows.item(i).own_lastname,
+        //             firstname: result.rows.item(i).own_firstname,
+        //             description: result.rows.item(i).own_description,
+        //             gender: result.rows.item(i).own_gender,
+        //             mother: result.rows.item(i).own_mother ? result.rows.item(i).own_mother : 0,
+        //             father: result.rows.item(i).own_father ? result.rows.item(i).own_father : 0
+        //         };
+        //         owners.push(owner);
+        //     }
+        //     return owners;
+        // })
+    };
+
+    public AddOwner(lastname: string, firstname: string, description: string, gender: number, father: number, mother: number): void {
+        this.sqlite.create({
+            name: DATABASE_NAME,
+            location: 'default'
+        })
+        .then((db) => {
+            this.db.executeSql('INSERT INTO owner (own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) values (?,?,?,?,?,?)', {lastname, firstname, description, gender, father, mother})
         })
         .catch(e => console.log(e));
     };
@@ -142,34 +217,6 @@ export class DataService {
     //     .then()
     //     .catch(e => console.log(e));
     // };
-    
-    public GetAllOwners(): Owner[] {
-        this.db.executeSql('SELECT * FROM owner', {})
-        .then((result) => {
-            if (result == null){
-                return;
-            }
-
-            var owners = [];
-            for (var i = 0; i < result.rows.length; i++) {
-                var owner = {
-                    id: result.rows.item(i).own_id,
-                    lastname: result.rows.item(i).own_lastname,
-                    firstname: result.rows.item(i).own_firstname,
-                    description: result.rows.item(i).own_description,
-                    gender: result.rows.item(i).own_gender,
-                    mother: result.rows.item(i).own_mother ? result.rows.item(i).own_mother : 0,
-                    father: result.rows.item(i).own_father ? result.rows.item(i).own_father : 0
-                };
-                owners.push(owner);
-            }
-
-            return owners;
-        })
-        .catch(e => console.log(e));
-
-        return;
-    };
 
     // private GetOwnerById(id): object {
     //     this.db.executeSql('SELECT * FROM owner where own_id = ? LIMIT 1', {id})
@@ -194,12 +241,6 @@ export class DataService {
 
     //     return;
     // };
-
-    public AddOwner(lastname: string, firstname: string, description: string, gender: number, father: number, mother: number): void {
-        this.db.executeSql('INSERT INTO owner (own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) values (?,?,?,?,?,?)', {lastname, firstname, description, gender, father, mother})
-        .then()
-        .catch(e => console.log(e));
-    };
 
     // private DeleteOwner(id): void {
     //     this.db.executeSql('DELETE FROM owner where own_id = ?', {id})
