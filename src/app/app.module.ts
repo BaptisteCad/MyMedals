@@ -3,9 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { AboutPage } from '../pages/about/about';
+import { HomePage } from '../pages/home/home';
 import { MedalPage } from '../pages/medal/medal';
 import { PersonPage } from '../pages/person/person';
+import { AddOwnerPage } from '../pages/addOwner/addOwner';
 import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -16,13 +17,14 @@ import { Camera } from '@ionic-native/camera';
 import { SQLite } from '@ionic-native/sqlite';
 
 // Services
-import { DataService } from '../services/data.service'
+import { DataProvider } from '../services/dataProvider'
 
 @NgModule({
   declarations: [
     MyApp,
-    AboutPage,
+    HomePage,
     PersonPage,
+    AddOwnerPage,
     MedalPage,
     TabsPage
   ],
@@ -33,8 +35,9 @@ import { DataService } from '../services/data.service'
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AboutPage,
+    HomePage,
     PersonPage,
+    AddOwnerPage,
     MedalPage,
     TabsPage
   ],
@@ -44,7 +47,7 @@ import { DataService } from '../services/data.service'
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Camera,
     SQLite,
-    DataService
+    DataProvider
   ]
 })
 export class AppModule {}

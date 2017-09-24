@@ -1,0 +1,60 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Add Person</ion-title>
+        <ion-buttons end>
+                <button ion-button icon-only (click)="dismiss()">
+                    <ion-icon name="close"></ion-icon>
+                </button>
+            </ion-buttons>
+    </ion-navbar>
+</ion-header>
+    
+<ion-content padding>
+        
+    <h2>Ajouter une personne</h2>
+
+    <ion-list>
+        <ion-item>
+            <ion-label floating>Nom</ion-label>
+            <ion-input type="text" [(ngModel)]="this.newOwner.lastname"></ion-input>
+        </ion-item>
+    
+        <ion-item>
+            <ion-label floating>Prénom</ion-label>
+            <ion-input type="text" [(ngModel)]="newOwner.firstname"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+            <ion-label floating>Description</ion-label>
+            <ion-textarea type="text" [(ngModel)]="newOwner.description"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Genre</ion-label>
+            <ion-select ngModel="newOwner.gender">
+                <ion-option value="H">Homme</ion-option>
+                <ion-option value="F">Femme</ion-option>
+            </ion-select>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>Père</ion-label>
+            <ion-select [(ngModel)]="newOwner.selectFather" ng-options="(father.lastname + ' ' + father.firstname) for father in fathers">
+            </ion-select>
+        </ion-item>
+    
+        <ion-item>
+            <ion-label>Mère</ion-label>
+            <ion-select [(ngModel)]="newOwner.selectMother" ng-options="(mother.lastname + ' ' + mother.firstname) for mother in mothers">
+            </ion-select>
+        </ion-item>
+
+        <ion-item>
+            <button ion-button block on-tap="save()">
+                <ion-icon name="checkmark"></ion-icon>
+                Enregistrer
+            </button>
+        </ion-item>
+    </ion-list>
+</ion-content>
+    

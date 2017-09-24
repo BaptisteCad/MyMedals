@@ -1,104 +1,28 @@
-<!-- <ion-header>
+<ion-header>
     <ion-navbar>
-      <ion-title>Person</ion-title>
+        <ion-title>Person</ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="presentAddOwnerModal()">
+                <ion-icon name="add"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
   
 <ion-content padding>
     <ion-list ng-if="owners">
-        <ion-item *ngFor="let owner of owners">
-            {{owner.firstname}}
-        </ion-item>
-    </ion-list>
-
-    <h2>Ajouter une personne</h2>
-
-    <ion-list>
-        <ion-item>
-            <ion-label floating>Nom</ion-label>
-            <ion-input type="text" [(ngModel)]="this.newOwner.lastname"></ion-input>
-        </ion-item>
-    
-        <ion-item>
-            <ion-label floating>Prénom</ion-label>
-            <ion-input type="text" [(ngModel)]="newOwner.firstname"></ion-input>
-        </ion-item>
-        
-        <ion-item>
-            <ion-label floating>Description</ion-label>
-            <ion-textarea type="text" [(ngModel)]="newOwner.description"></ion-textarea>
-        </ion-item>
-
-        <ion-item>
-            <ion-label floating>Genre</ion-label>
-            <ion-select ngModel="newOwner.gender">
-                <ion-option value="H">Homme</ion-option>
-                <ion-option value="F">Femme</ion-option>
-            </ion-select>
-        </ion-item>
-
-        <ion-item>
-            <ion-label>Père</ion-label>
-            <ion-select [(ngModel)]="newOwner.selectFather" ng-options="(father.lastname + ' ' + father.firstname) for father in fathers">
-            </ion-select>
-        </ion-item>
-    
-        <ion-item>
-            <ion-label>Mère</ion-label>
-            <ion-select [(ngModel)]="newOwner.selectMother" ng-options="(mother.lastname + ' ' + mother.firstname) for mother in mothers">
-            </ion-select>
-        </ion-item>
-
-        <ion-item>
-            <button ion-button block on-tap="save()">
-                <ion-icon name="checkmark"></ion-icon>
-                Enregistrer
-            </button>
-        </ion-item>
+        <ion-item-sliding #item *ngFor="let owner of owners">
+            <ion-item>
+                {{owner.firstname}} {{owner.lastname}} {{owner.id}}
+            </ion-item>
+            <ion-item-options side="right">
+                    <button ion-buttons icon-only>
+                        <ion-icon name="refresh"></ion-icon>
+                    </button>
+                    <button ion-button icon-only (click)="delete(owner.id)">
+                        <ion-icon name="trash"></ion-icon>
+                    </button>
+                </ion-item-options>
+        </ion-item-sliding>
     </ion-list>
 </ion-content>
-   -->
-
-   <ion-header>
-    <ion-navbar>
-      <ion-title>
-        SQLite
-      </ion-title>
-    </ion-navbar>
-  </ion-header>
-  
-  <ion-content padding>
-    <p>Permet de stocker des données de façon structurées</p>
-    <ion-list>
-      <ion-item>
-        <ion-label fixed>Title</ion-label>
-        <ion-input type="text" [(ngModel)]="titleMovie"></ion-input>
-      </ion-item>
-  
-      <ion-item>
-        <ion-label fixed>Rating</ion-label>
-        <ion-input type="text" [(ngModel)]="ratingMovie"></ion-input>
-      </ion-item>
-  
-      <ion-item>
-        <ion-label fixed>Description</ion-label>
-        <ion-input type="text" [(ngModel)]="descriptionMovie"></ion-input>
-      </ion-item>
-  
-      <ion-item>
-        <ion-label fixed>Categorie</ion-label>
-        <ion-input type="text" [(ngModel)]="categorieMovie"></ion-input>
-      </ion-item>
-    </ion-list>
-  
-    <button ion-button clear (tap)="saveMyFilm()">Save my film !!</button>
-  
-    <ion-list *ngIf="movies">
-      <ion-item *ngFor="let movie of movies">
-        <ion-label fixed>{{ movie }}</ion-label>
-      </ion-item>
-    </ion-list>
-  
-    <button ion-button clear (tap)="retrieveFilms()">Get films saved !!</button>
-  
-  </ion-content>
