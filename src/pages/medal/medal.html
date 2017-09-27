@@ -1,45 +1,28 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Medal
-    </ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title>Medal</ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="presentAddMedalModal()">
+                <ion-icon name="add"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
 </ion-header>
-
-<ion-content>
-  <ion-list>
-      <ion-item>
-          <button ion-button block on-tap="takePicture()">
-              <ion-icon name="camera"></ion-icon>
-              Prendre une photo
-          </button>
-      </ion-item>
-      
-      <ion-item>
-            <img style="display:none;max-width:50%;" id="smallImage" />
-      </ion-item>
-
-      <ion-item>
-          <ion-label floating>Title</ion-label>
-          <ion-input type="text" ng-model="newMedal.title"></ion-input>
-      </ion-item>
-
-      <ion-item>
-          <ion-label floating>Détenteur</ion-label>
-          <ion-select ng-model="newMedal.selectOwner" ng-options="(owner.lastname + ' ' + owner.firstname) for owner in owners">
-          </ion-select>
-      </ion-item>
-      
-      <ion-item>
-          <ion-label floating>Description</ion-label>
-          <ion-textarea type="text" ng-model="newMedal.description"></ion-textarea>
-      </ion-item>
-
-      <ion-item>
-          <button ion-button block on-tap="save()">
-              <ion-icon name="checkmark"></ion-icon>
-              Enregistrer
-          </button>
-      </ion-item>
-  </ion-list>
+    
+<ion-content padding>
+    <ion-list ng-if="medals">
+        <ion-item-sliding #item *ngFor="let medal of medals">
+            <ion-item>
+                {{medal}}
+            </ion-item>
+            <ion-item-options side="right">
+                    <button ion-buttons icon-only>
+                        <ion-icon name="refresh"></ion-icon>
+                    </button>
+                    <button ion-button icon-only (click)="delete(medal.id)">
+                        <ion-icon name="trash"></ion-icon>
+                    </button>
+                </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
 </ion-content>
