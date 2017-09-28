@@ -4,6 +4,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 
 // Models
 import { Owner } from '../models/owner'
+import { Medal } from '../models/medal'
 
 const DATABASE_NAME: string = "myMedals.db";
 
@@ -84,4 +85,44 @@ export class DataProvider {
         })
         .catch(e => console.log(e));
     };
+
+    public GetAllMedals(): Promise<Medal[]> {
+        return new Promise((resolve, reject) => {
+            this.db.executeSql("select med_id, med_name, med_description, med_owner from medals", {}).then(
+                (result) => {
+                    var medals = [];
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var medal = {
+                            id: result.rows.item(i).med_id,
+                            name: result.rows.item(i).med_name,
+                            descriptio: result.rows.item(i).med_description,
+                            ownerId: result.rows.item(i).med_owner
+                        };
+                        medals.push(medal);
+                    }
+                    resolve(medals);
+                }
+            );
+        });
+    }
+
+    public GetMedalsByOwner(ownerId: number): Promise<Medal[]> {
+        return new Promise((resolve, reject) => {
+            this.db.executeSql("select med_id, med_name, med_description, med_owner from medals where med_owner = ?", {ownerId}).then(
+                (result) => {
+                    var medals = [];
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var medal = {
+                            id: result.rows.item(i).med_id,
+                            name: result.rows.item(i).med_name,
+                            descriptio: result.rows.item(i).med_description,
+                            ownerId: result.rows.item(i).med_owner
+                        };
+                        medals.push(medal);
+                    }
+                    resolve(medals);
+                }
+            );
+        });
+    }
 }

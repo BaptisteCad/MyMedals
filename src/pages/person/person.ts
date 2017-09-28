@@ -9,6 +9,7 @@ import { Owner } from '../../models/owner'
 
 // Components
 import { AddOwnerPage } from '../addOwner/addOwner'
+import { MedalPage } from '../medal/medal'
 
 @Component({
   selector: 'page-person',
@@ -41,4 +42,9 @@ export class PersonPage {
     })
   }
 
+  showMedal(id: number) {
+    this.navCtrl.push(MedalPage, {
+      ownerId: id
+    });
+  }
 }

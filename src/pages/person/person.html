@@ -11,7 +11,7 @@
   
 <ion-content padding>
     <ion-list ng-if="owners">
-        <ion-item-sliding #item *ngFor="let owner of owners">
+        <ion-item-sliding #item *ngFor="let owner of owners" (click)="showMedals(owner.id)">
             <ion-item>
                 {{owner.firstname}} {{owner.lastname}} {{owner.id}}
             </ion-item>
