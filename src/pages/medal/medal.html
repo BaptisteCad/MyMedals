@@ -13,7 +13,7 @@
     <ion-list ng-if="medals">
         <ion-item-sliding #item *ngFor="let medal of medals">
             <ion-item>
-                {{medal}}
+                {{medal.id}} {{medal.name}}
             </ion-item>
             <ion-item-options side="right">
                     <button ion-buttons icon-only>

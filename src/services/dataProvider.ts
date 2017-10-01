@@ -5,6 +5,7 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 // Models
 import { Owner } from '../models/owner'
 import { Medal } from '../models/medal'
+import { Picture } from '../models/picture'
 
 const DATABASE_NAME: string = "myMedals.db";
 
@@ -34,22 +35,25 @@ export class DataProvider {
         console.log('Create DB');
         this.OpenDataBase()
         .then(() => {
-            this.db.executeSql('CREATE TABLE IF NOT EXISTS medals (med_id integer primary key autoincrement, med_name text, med_description text, med_image blob, med_owner integer)', {})
+            this.db.executeSql('CREATE TABLE IF NOT EXISTS medals (med_id integer primary key autoincrement, med_name text, med_description text, med_owner integer)', [])
         })
         .then(() => {
             console.log('Table Medals created');
-            this.db.executeSql('CREATE TABLE IF NOT EXISTS owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer)',{})
-            .then(() => {
-                console.log('Table Owners created');
-            })
-            .catch(e => console.log(e));        
+            this.db.executeSql('CREATE TABLE IF NOT EXISTS owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer)', [])
+        })
+        .then(() => {
+            console.log('Table Owners created');
+            this.db.executeSql('CREATE TABLE IF NOT EXISTS pictures (pic_id integer primary key autoincrement, pic_medal number, pic_image blob)', [])
+        })
+        .then(() => {
+            console.log('Table Pictures created');
         })
         .catch(e => console.log(e));
-    };
+    }
 
     public GetAllOwners(): Promise<Owner[]> {
         return new Promise((resolve, reject) => {
-            this.db.executeSql("select own_id, own_lastname, own_firstname, own_description, own_gender, own_mother, own_father from owners", {}).then(
+            this.db.executeSql("select own_id, own_lastname, own_firstname, own_description, own_gender, own_mother, own_father from owners", []).then(
                 (result) => {
                     var owners = [];
                     for (var i = 0; i < result.rows.length; i++) {
@@ -76,6 +80,14 @@ export class DataProvider {
             console.log("Owner saved")
         })
         .catch(e => console.log(e));
+    }
+
+    public UpdateOwner(id: number, lastname: string, firstname: string, description: string, gender: number, father: number, mother: number): void {
+        this.db.executeSql('UPDATE owner set own_lastname = ?, own_firstname = ?, own_description = ?, own_gender = ?, own_father = ?, own_mother = ? where own_id = ?', [lastname, firstname, description, gender, father, mother, id])
+        .then(() => {
+            console.log('Owner updated')
+        })
+        .catch(e => console.log(e));
     };
 
     public DeleteOwner(id: number): Promise<void> {
@@ -84,45 +96,76 @@ export class DataProvider {
             console.log("Owner deleted")
         })
         .catch(e => console.log(e));
-    };
+    }
 
     public GetAllMedals(): Promise<Medal[]> {
         return new Promise((resolve, reject) => {
-            this.db.executeSql("select med_id, med_name, med_description, med_owner from medals", {}).then(
+            this.db.executeSql("select med_id, med_name, med_description, med_owner, pic_id, pic_image from medals left outer join pictures on medals.med_id = pictures.pic_medal", []).then(
                 (result) => {
-                    var medals = [];
-                    for (var i = 0; i < result.rows.length; i++) {
-                        var medal = {
-                            id: result.rows.item(i).med_id,
-                            name: result.rows.item(i).med_name,
-                            descriptio: result.rows.item(i).med_description,
-                            ownerId: result.rows.item(i).med_owner
-                        };
-                        medals.push(medal);
-                    }
-                    resolve(medals);
+                    resolve(this.DataToMedals(result));
                 }
-            );
+            )
+            .catch((e) => { alert(e.message) });
         });
     }
 
     public GetMedalsByOwner(ownerId: number): Promise<Medal[]> {
         return new Promise((resolve, reject) => {
-            this.db.executeSql("select med_id, med_name, med_description, med_owner from medals where med_owner = ?", {ownerId}).then(
+            this.db.executeSql("select med_id, med_name, med_description, med_owner, pic_id, pic_image from medals left outer join pictures on medals.med_id = pictures.pic_medal where med_owner = ?", [ownerId]).then(
                 (result) => {
-                    var medals = [];
-                    for (var i = 0; i < result.rows.length; i++) {
-                        var medal = {
-                            id: result.rows.item(i).med_id,
-                            name: result.rows.item(i).med_name,
-                            descriptio: result.rows.item(i).med_description,
-                            ownerId: result.rows.item(i).med_owner
-                        };
-                        medals.push(medal);
-                    }
-                    resolve(medals);
+                    resolve(this.DataToMedals(result));
                 }
             );
         });
+    }
+
+    public AddMedal(name: string, description: string, owner: number) : void {
+        console.log(name + ' ' + description + ' ' + owner)
+        this.db.executeSql('INSERT INTO medals (med_name, med_description, med_owner) values (?,?,?)', [name, description, owner])
+        .then(() => {
+            console.log('Medal created')
+        })
+        .catch((e) => {
+            console.log(e);
+        });
+    }
+
+    public AddPicture(image: string, medal: number): void {
+        this.db.executeSql('INSERT INTO pictures (pic_image, pic_medal) values (?,?)', [image, medal])
+        .then(() => {
+            console.log('Picture saved')
+        })
+        .catch(e => console.log(e));
+    }
+
+    private DataToMedals(result): Medal[] {
+        var medals = new Array<Medal>();
+        for (var i = 0; i < result.rows.length; i++) {
+            var medal = undefined;
+            medal = medals.find(function (med) { return med.id == result.rows.item(i).med_id});
+            if (!medal) {
+                medal = {
+                    id: result.rows.item(i).med_id,
+                    name: result.rows.item(i).med_name,
+                    description: result.rows.item(i).med_description,
+                    ownerId: result.rows.item(i).med_owner,
+                    pictures: new Array<Picture>()
+                };
+                medals.push(medal);
+            }
+            
+            if (result.rows.item(i).pic_id) {
+                medal.pictures.push( {
+                    id: result.rows.item(i).pic_id,
+                    image: result.rows.item(i).pic_id,
+                    medalId: result.rows.item(i).med_id
+                });
+            }
+
+            console.log('medals length')
+            console.log(medals.length)
+            console.log(result.rows.item(i).med_id)
+        }
+        return medals;
     }
 }

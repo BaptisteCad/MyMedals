@@ -21,18 +21,19 @@
       
             <ion-item>
                 <ion-label floating>Title</ion-label>
-                <ion-input type="text" ng-model="newMedal.title"></ion-input>
+                <ion-input type="text" [(ngModel)]="newMedal.name"></ion-input>
             </ion-item>
       
             <ion-item>
                 <ion-label floating>Détenteur</ion-label>
-                <ion-select ng-model="newMedal.selectOwner" ng-options="(owner.lastname + ' ' + owner.firstname) for owner in owners">
+                <ion-select [(ngModel)]="selectOwner">
+                    <ion-option *ngFor="let owner of owners" [value]="owner">{{owner.lastname}}</ion-option>
                 </ion-select>
             </ion-item>
             
             <ion-item>
                 <ion-label floating>Description</ion-label>
-                <ion-textarea type="text" ng-model="newMedal.description"></ion-textarea>
+                <ion-textarea type="text" [(ngModel)]="newMedal.description"></ion-textarea>
             </ion-item>
       
             <ion-item>

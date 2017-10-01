@@ -5,6 +5,7 @@ import { MyApp } from './app.component';
 
 import { HomePage } from '../pages/home/home';
 import { MedalPage } from '../pages/medal/medal';
+import { AddMedalPage } from '../pages/addMedal/addMedal'
 import { PersonPage } from '../pages/person/person';
 import { AddOwnerPage } from '../pages/addOwner/addOwner';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -26,6 +27,7 @@ import { DataProvider } from '../services/dataProvider'
     PersonPage,
     AddOwnerPage,
     MedalPage,
+    AddMedalPage,
     TabsPage
   ],
   imports: [
@@ -39,6 +41,7 @@ import { DataProvider } from '../services/dataProvider'
     PersonPage,
     AddOwnerPage,
     MedalPage,
+    AddMedalPage,
     TabsPage
   ],
   providers: [

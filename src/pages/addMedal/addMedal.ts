@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ViewController } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
+
+// Services
+import { DataProvider } from '../../services/dataProvider'
+
+// Models
+import { Medal } from '../../models/medal'
+import { Owner } from '../../models/owner'
 
 @Component({
   selector: 'page-add-medal',
@@ -8,8 +15,13 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
 })
 export class AddMedalPage {
 
-  constructor(public navCtrl: NavController, private camera: Camera) {
+  newMedal: Medal;
+  selectOwner: Owner;
+  owners: Owner[];
 
+  constructor(public navCtrl: NavController, private dataProvider: DataProvider, private viewCtrl: ViewController,  private camera: Camera) {
+    this.newMedal = new Medal();
+    this.getOwners();
   }
 
   options: CameraOptions = {
@@ -27,5 +39,20 @@ export class AddMedalPage {
      }, (err) => {
       // Handle error
      });
+  }
+
+  save() {
+    console.log(this.newMedal)
+    this.dataProvider.AddMedal(
+      this.newMedal.name,
+      this.newMedal.description,
+      this.selectOwner.id
+    );
+  }
+
+  getOwners() {
+    this.dataProvider.GetAllOwners().then((owners) => {
+      this.owners = owners;
+    });
   }
 }

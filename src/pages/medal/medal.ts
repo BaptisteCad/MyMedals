@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ModalController } from 'ionic-angular';
 
 // Services
 import { DataProvider } from '../../services/dataProvider'
 
 // Models
 import { Medal } from '../../models/medal'
+//import { Picture } from '../../models/picture'
+
+// Components
+import { AddMedalPage } from '../addMedal/addMedal'
 
 @Component({
   selector: 'page-medal',
@@ -16,7 +20,7 @@ export class MedalPage {
   ownerId: number;
   medals: Medal[];
 
-  constructor(public navCtrl: NavController, private navParams: NavParams, private dataprovider: DataProvider) {
+  constructor(public navCtrl: NavController, private navParams: NavParams, public modalCtrl: ModalController, private dataprovider: DataProvider) {
     this.ownerId = this.navParams.get('ownerId');
     if (this.ownerId) {
       this.dataprovider.GetMedalsByOwner(this.ownerId).then((medals) => {
@@ -27,5 +31,10 @@ export class MedalPage {
         this.medals = medals;
       });
     }
+  }
+
+  presentAddMedalModal() {
+    let addMedalModal = this.modalCtrl.create(AddMedalPage, {});
+    addMedalModal.present();
   }
 }
