@@ -1,3 +1,5 @@
+import { Medal } from './medal'
+
 export class Owner{
     id: number;
     lastname: string;
@@ -6,4 +8,5 @@ export class Owner{
     gender: number;
     father: number;
     mother: number;
+    medals: Medal[];
 }

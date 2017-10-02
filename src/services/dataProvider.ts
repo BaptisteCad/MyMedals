@@ -55,20 +55,7 @@ export class DataProvider {
         return new Promise((resolve, reject) => {
             this.db.executeSql("select own_id, own_lastname, own_firstname, own_description, own_gender, own_mother, own_father from owners", []).then(
                 (result) => {
-                    var owners = [];
-                    for (var i = 0; i < result.rows.length; i++) {
-                        var owner = {
-                            id: result.rows.item(i).own_id,
-                            lastname: result.rows.item(i).own_lastname,
-                            firstname: result.rows.item(i).own_firstname,
-                            description: result.rows.item(i).own_description,
-                            gender: result.rows.item(i).own_gender,
-                            mother: result.rows.item(i).own_mother ? result.rows.item(i).own_mother : 0,
-                            father: result.rows.item(i).own_father ? result.rows.item(i).own_father : 0
-                        };
-                        owners.push(owner);
-                    }
-                    resolve(owners);
+                    resolve(this.DataToOwners(result));
                 }
             );
         });
@@ -119,23 +106,30 @@ export class DataProvider {
         });
     }
 
-    public AddMedal(name: string, description: string, owner: number) : void {
-        console.log(name + ' ' + description + ' ' + owner)
-        this.db.executeSql('INSERT INTO medals (med_name, med_description, med_owner) values (?,?,?)', [name, description, owner])
-        .then(() => {
-            console.log('Medal created')
-        })
-        .catch((e) => {
-            console.log(e);
+    public AddMedal(name: string, description: string, owner: number) : Promise<number> {
+        var createdId: number;
+        return new Promise((resolve, reject) => { 
+            this.db.executeSql('INSERT INTO medals (med_name, med_description, med_owner) values (?,?,?)', [name, description, owner])
+            .then(() => {
+                console.log('Medal created');
+                resolve(createdId);
+            })
+            .catch((e) => {
+                console.log(e);
+                reject();
+            });
         });
     }
 
-    public AddPicture(image: string, medal: number): void {
-        this.db.executeSql('INSERT INTO pictures (pic_image, pic_medal) values (?,?)', [image, medal])
-        .then(() => {
-            console.log('Picture saved')
-        })
-        .catch(e => console.log(e));
+    public AddPicture(image: string, medal: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.db.executeSql('INSERT INTO pictures (pic_image, pic_medal) values (?,?)', [image, medal])
+            .then(() => {
+                console.log('Picture saved')
+                resolve();
+            })
+            .catch(e => console.log(e));
+        });
     }
 
     private DataToMedals(result): Medal[] {
@@ -161,11 +155,67 @@ export class DataProvider {
                     medalId: result.rows.item(i).med_id
                 });
             }
-
-            console.log('medals length')
-            console.log(medals.length)
-            console.log(result.rows.item(i).med_id)
         }
         return medals;
+    }
+
+    private DataToOwnersWithMedals(result): Owner[] {
+        var owners = new Array<Owner>();
+        for (var i = 0; i < result.rows.length; i++) {
+            var owner = owners.find(function (own) { return own.id == result.rows.item(i).own_id })
+            if (!owner) {
+                owner = {
+                    id: result.rows.item(i).own_id,
+                    lastname: result.rows.item(i).own_lastname,
+                    firstname: result.rows.item(i).own_firstname,
+                    description: result.rows.item(i).own_description,
+                    gender: result.rows.item(i).own_gender,
+                    mother: result.rows.item(i).own_mother ? result.rows.item(i).own_mother : 0,
+                    father: result.rows.item(i).own_father ? result.rows.item(i).own_father : 0,
+                    medals: new Array<Medal>()
+                }
+                owners.push(owner)
+            }
+
+            var medal = undefined;
+            medal = owner.medals.find(function (med) { return med.id == result.rows.item(i).med_id});
+            if (!medal) {
+                medal = {
+                    id: result.rows.item(i).med_id,
+                    name: result.rows.item(i).med_name,
+                    description: result.rows.item(i).med_description,
+                    ownerId: result.rows.item(i).med_owner,
+                    pictures: new Array<Picture>()
+                };
+                owner.medals.push(medal);
+            }
+            
+            if (result.rows.item(i).pic_id) {
+                medal.pictures.push( {
+                    id: result.rows.item(i).pic_id,
+                    image: result.rows.item(i).pic_id,
+                    medalId: result.rows.item(i).med_id
+                });
+            }
+        }
+        return owners
+    }
+
+    private DataToOwners(result): Owner[] {
+        var owners = new Array<Owner>();
+        for (var i = 0; i < result.rows.length; i++) {
+            var owner = {
+                id: result.rows.item(i).own_id,
+                lastname: result.rows.item(i).own_lastname,
+                firstname: result.rows.item(i).own_firstname,
+                description: result.rows.item(i).own_description,
+                gender: result.rows.item(i).own_gender,
+                mother: result.rows.item(i).own_mother ? result.rows.item(i).own_mother : 0,
+                father: result.rows.item(i).own_father ? result.rows.item(i).own_father : 0,
+                medals: new Array<Medal>()
+            };
+            owners.push(owner);
+        }
+        return owners;
     }
 }

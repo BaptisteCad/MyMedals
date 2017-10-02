@@ -16,6 +16,7 @@ import { Owner } from '../../models/owner'
 export class AddMedalPage {
 
   newMedal: Medal;
+  newPictures: string[];
   selectOwner: Owner;
   owners: Owner[];
 
@@ -31,23 +32,39 @@ export class AddMedalPage {
     mediaType: this.camera.MediaType.PICTURE
   }
   
+  dismiss() {
+    this.viewCtrl.dismiss();
+  }
+  
   takePicture() {
     this.camera.getPicture(this.options).then((imageData) => {
       var smallImage = <HTMLImageElement>document.getElementById('smallImage');
       smallImage.style.display = 'block';
       smallImage.src = "data:image/jpeg;base64," + imageData;
+      this.newPictures.push(imageData);
      }, (err) => {
       // Handle error
      });
   }
 
   save() {
-    console.log(this.newMedal)
     this.dataProvider.AddMedal(
       this.newMedal.name,
       this.newMedal.description,
       this.selectOwner.id
-    );
+    ).then((medalId) => {
+      var promises = [];
+
+      this.newPictures.forEach(picture => {
+        promises.push(
+          this.dataProvider.AddPicture(picture, medalId)
+        );
+      });
+
+      Promise.all(promises).then(() => {
+        console.log('all pictures saved');
+      })
+    });
   }
 
   getOwners() {

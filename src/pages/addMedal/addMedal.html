@@ -1,47 +1,51 @@
 <ion-header>
-        <ion-navbar>
-          <ion-title>
+    <ion-navbar>
+        <ion-title>
             Add Medal
-          </ion-title>
-        </ion-navbar>
-      </ion-header>
-      
-      <ion-content>
-        <ion-list>
-            <ion-item>
-                <button ion-button block on-tap="takePicture()">
+        </ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="dismiss()">
+            <ion-icon name="close"></ion-icon>
+        </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-list>
+        <ion-item>
+            <button ion-button block on-tap="takePicture()">
                     <ion-icon name="camera"></ion-icon>
                     Prendre une photo
                 </button>
-            </ion-item>
-            
-            <ion-item>
-                  <img style="display:none;max-width:50%;" id="smallImage" />
-            </ion-item>
-      
-            <ion-item>
-                <ion-label floating>Title</ion-label>
-                <ion-input type="text" [(ngModel)]="newMedal.name"></ion-input>
-            </ion-item>
-      
-            <ion-item>
-                <ion-label floating>Détenteur</ion-label>
-                <ion-select [(ngModel)]="selectOwner">
-                    <ion-option *ngFor="let owner of owners" [value]="owner">{{owner.lastname}}</ion-option>
-                </ion-select>
-            </ion-item>
-            
-            <ion-item>
-                <ion-label floating>Description</ion-label>
-                <ion-textarea type="text" [(ngModel)]="newMedal.description"></ion-textarea>
-            </ion-item>
-      
-            <ion-item>
-                <button ion-button block on-tap="save()">
+        </ion-item>
+
+        <ion-item>
+            <img style="display:none;max-width:50%;" id="smallImage" />
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Title</ion-label>
+            <ion-input type="text" [(ngModel)]="newMedal.name"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Détenteur</ion-label>
+            <ion-select [(ngModel)]="selectOwner">
+                <ion-option *ngFor="let owner of owners" [value]="owner">{{owner.lastname}}</ion-option>
+            </ion-select>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Description</ion-label>
+            <ion-textarea type="text" [(ngModel)]="newMedal.description"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+            <button ion-button block on-tap="save()">
                     <ion-icon name="checkmark"></ion-icon>
                     Enregistrer
                 </button>
-            </ion-item>
-        </ion-list>
-      </ion-content>
-      
+        </ion-item>
+    </ion-list>
+</ion-content>
