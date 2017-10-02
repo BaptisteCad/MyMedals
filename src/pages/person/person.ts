@@ -20,25 +20,28 @@ export class PersonPage {
   owners: Owner[];
 
   constructor(public navCtrl: NavController, public modalCtrl: ModalController, private dataProvider: DataProvider) {
-    this.getOwners();
+  }
+
+  ionViewDidEnter(){
+    this.getOwners()
   }
 
   presentAddOwnerModal() {
-    let addOwnerModal = this.modalCtrl.create(AddOwnerPage, {});
-    addOwnerModal.present();
+    let addOwnerModal = this.modalCtrl.create(AddOwnerPage, {})
+    addOwnerModal.present()
   }
 
   getOwners() {
     this.dataProvider.GetAllOwners().then((owners) => {
-      this.owners = owners;
+      this.owners = owners
     });
   }
 
   delete(id: number) {
     alert(id)
     this.dataProvider.DeleteOwner(id).then(() => {
-      alert('Owner deleted');
-      this.getOwners();
+      alert('Owner deleted')
+      this.getOwners()
     })
   }
 

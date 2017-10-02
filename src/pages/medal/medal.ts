@@ -21,7 +21,10 @@ export class MedalPage {
   medals: Medal[];
 
   constructor(public navCtrl: NavController, private navParams: NavParams, public modalCtrl: ModalController, private dataprovider: DataProvider) {
-    this.ownerId = this.navParams.get('ownerId');
+  }
+
+  ionViewDidEnter() {
+    this.ownerId = this.navParams.get('ownerId')
     if (this.ownerId) {
       this.dataprovider.GetMedalsByOwner(this.ownerId).then((medals) => {
         this.medals = medals;

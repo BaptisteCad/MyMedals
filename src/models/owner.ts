@@ -5,7 +5,7 @@ export class Owner{
     lastname: string;
     firstname: string;
     description: string;
-    gender: number;
+    gender: string;
     father: number;
     mother: number;
     medals: Medal[];
