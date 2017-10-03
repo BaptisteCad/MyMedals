@@ -38,14 +38,19 @@ export class PersonPage {
   }
 
   delete(id: number) {
-    alert(id)
     this.dataProvider.DeleteOwner(id).then(() => {
       alert('Owner deleted')
       this.getOwners()
     })
   }
 
-  showMedal(id: number) {
+  update(id: number) {
+    this.navCtrl.push(AddOwnerPage, {
+      ownerId: id
+    });
+  }
+
+  showMedals(id: number) {
     this.navCtrl.push(MedalPage, {
       ownerId: id
     });

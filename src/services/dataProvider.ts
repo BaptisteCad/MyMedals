@@ -60,6 +60,25 @@ export class DataProvider {
             );
         });
     }
+    
+    public GetOwner(id: number): Promise<Owner> {
+        return new Promise((resolve, reject) => {
+            this.db.executeSql("select own_id, own_lastname, own_firstname, own_description, own_gender, own_mother, own_father from owners where own_id = ?", [id]).then(
+                (result) => {
+                    resolve({
+                        id: result.rows.item(0).own_id,
+                        lastname: result.rows.item(0).own_lastname,
+                        firstname: result.rows.item(0).own_firstname,
+                        description: result.rows.item(0).own_description,
+                        gender: result.rows.item(0).own_gender,
+                        mother: result.rows.item(0).own_mother ? result.rows.item(0).own_mother : 0,
+                        father: result.rows.item(0).own_father ? result.rows.item(0).own_father : 0,
+                        medals: new Array<Medal>()
+                    });
+                }
+            );
+        });
+    }
 
     public AddOwner(lastname: string, firstname: string, description: string, gender: string, father: number, mother: number): void {
         this.db.executeSql('INSERT INTO owners (own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) values (?,?,?,?,?,?)', [lastname, firstname, description, gender, father, mother])
@@ -70,7 +89,7 @@ export class DataProvider {
     }
 
     public UpdateOwner(id: number, lastname: string, firstname: string, description: string, gender: string, father: number, mother: number): void {
-        this.db.executeSql('UPDATE owner set own_lastname = ?, own_firstname = ?, own_description = ?, own_gender = ?, own_father = ?, own_mother = ? where own_id = ?', [lastname, firstname, description, gender, father, mother, id])
+        this.db.executeSql('UPDATE owners set own_lastname = ?, own_firstname = ?, own_description = ?, own_gender = ?, own_father = ?, own_mother = ? where own_id = ?', [lastname, firstname, description, gender, father, mother, id])
         .then(() => {
             console.log('Owner updated')
         })

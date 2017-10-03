@@ -11,12 +11,12 @@
   
 <ion-content padding>
     <ion-list ng-if="owners">
-        <ion-item-sliding #item *ngFor="let owner of owners" (click)="showMedals(owner.id)">
-            <ion-item>
+        <ion-item-sliding #item *ngFor="let owner of owners">
+            <ion-item (click)="showMedals(owner.id)">
                 {{owner.firstname}} {{owner.lastname}} {{owner.id}}
             </ion-item>
             <ion-item-options side="right">
-                    <button ion-buttons icon-only>
+                    <button ion-buttons icon-only (click)="update(owner.id)">
                         <ion-icon name="refresh"></ion-icon>
                     </button>
                     <button ion-button icon-only (click)="delete(owner.id)">

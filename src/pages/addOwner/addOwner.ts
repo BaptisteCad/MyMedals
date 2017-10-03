@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ViewController } from 'ionic-angular';
+import { ViewController, NavParams } from 'ionic-angular';
 
 // Services
 import { DataProvider } from '../../services/dataProvider'
@@ -13,14 +13,12 @@ import { Owner } from '../../models/owner'
 })
 export class AddOwnerPage {
 
-  newOwner: Owner;
+  owner: Owner;
   fathers: Owner[];
   mothers: Owner[];
-  selectFather: Owner;
-  selectMother: Owner;
 
-  constructor(private dataProvider: DataProvider, public viewCtrl: ViewController) {
-    this.newOwner = new Owner();
+  constructor(private dataProvider: DataProvider, public viewCtrl: ViewController, private navParams: NavParams) {
+    this.owner = new Owner();
   }
 
   ionViewDidEnter() {
@@ -29,6 +27,15 @@ export class AddOwnerPage {
       this.fathers = owners.filter(function (own) { return own.gender === "H"})
       this.mothers = owners.filter(function (own) { return own.gender === "F"})
     })
+
+    if (this.navParams.get('ownerId')) {
+      this.dataProvider.GetOwner(this.navParams.get('ownerId'))
+      .then((owner) => {
+        this.owner = owner
+        console.log(this.owner)
+      })
+    }
+    console.log(this.owner)
   }
   
   dismiss() {
@@ -36,14 +43,27 @@ export class AddOwnerPage {
   }
   
   save() {
-    this.dataProvider.AddOwner(
-      this.newOwner.lastname,
-      this.newOwner.firstname,
-      this.newOwner.description,
-      this.newOwner.gender,
-      this.newOwner.father,
-      this.newOwner.mother
-    )
+    console.log(this.owner.id)
+    if (this.owner.id) {
+      this.dataProvider.UpdateOwner(
+        this.owner.id,
+        this.owner.lastname,
+        this.owner.firstname,
+        this.owner.description,
+        this.owner.gender,
+        this.owner.father,
+        this.owner.mother
+      )
+    } else {
+      this.dataProvider.AddOwner(
+        this.owner.lastname,
+        this.owner.firstname,
+        this.owner.description,
+        this.owner.gender,
+        this.owner.father,
+        this.owner.mother
+      )
+    }
   }
 
 }
