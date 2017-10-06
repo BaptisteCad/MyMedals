@@ -12,7 +12,17 @@
 </ion-header>
 
 <ion-content>
-    <ion-list>
+    <ion-list ng-if="medal">
+        <ion-item>
+            <ion-slides pager>
+
+                <ion-slide *ngFor="let picture of pictures">
+                    <img style="display:block;max-width:50%;" src="data:image/jpeg;base64,{{picture}}" />
+                </ion-slide>
+            
+            </ion-slides>
+        </ion-item>
+
         <ion-item>
             <button ion-button block on-tap="takePicture()">
                     <ion-icon name="camera"></ion-icon>
@@ -21,31 +31,27 @@
         </ion-item>
 
         <ion-item>
-            <img style="display:none;max-width:50%;" id="smallImage" />
-        </ion-item>
-
-        <ion-item>
             <ion-label floating>Title</ion-label>
-            <ion-input type="text" [(ngModel)]="newMedal.name"></ion-input>
+            <ion-input type="text" [(ngModel)]="medal.name"></ion-input>
         </ion-item>
 
         <ion-item>
             <ion-label floating>Détenteur</ion-label>
-            <ion-select [(ngModel)]="selectOwner">
-                <ion-option *ngFor="let owner of owners" [value]="owner">{{owner.lastname}}</ion-option>
+            <ion-select [(ngModel)]="medal.ownerId">
+                <ion-option *ngFor="let owner of owners" [value]="owner.id">{{owner.lastname}} {{owner.firstname}}</ion-option>
             </ion-select>
         </ion-item>
 
         <ion-item>
             <ion-label floating>Description</ion-label>
-            <ion-textarea type="text" [(ngModel)]="newMedal.description"></ion-textarea>
+            <ion-textarea type="text" [(ngModel)]="medal.description"></ion-textarea>
         </ion-item>
 
         <ion-item>
             <button ion-button block on-tap="save()">
-                    <ion-icon name="checkmark"></ion-icon>
-                    Enregistrer
-                </button>
+                <ion-icon name="checkmark"></ion-icon>
+                Enregistrer
+            </button>
         </ion-item>
     </ion-list>
 </ion-content>

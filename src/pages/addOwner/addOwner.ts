@@ -35,7 +35,6 @@ export class AddOwnerPage {
         console.log(this.owner)
       })
     }
-    console.log(this.owner)
   }
   
   dismiss() {

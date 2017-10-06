@@ -114,6 +114,17 @@ export class DataProvider {
             .catch((e) => { alert(e.message) });
         });
     }
+    
+    public GetMedal(id: number): Promise<Medal> {
+        return new Promise((resolve, reject) => {
+            this.db.executeSql("select med_id, med_name, med_description, med_owner, pic_id, pic_image from medals left outer join pictures on medals.med_id = pictures.pic_medal where medals.med_id = ?", [id]).then(
+                (result) => {
+                    resolve(this.DataToMedals(result)[0]);
+                }
+            )
+            .catch((e) => { alert(e.message) });
+        });
+    }
 
     public GetMedalsByOwner(ownerId: number): Promise<Medal[]> {
         return new Promise((resolve, reject) => {

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, ViewController } from 'ionic-angular';
+import { NavController, ViewController, NavParams } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 
 // Services
@@ -15,14 +15,27 @@ import { Owner } from '../../models/owner'
 })
 export class AddMedalPage {
 
-  newMedal: Medal;
-  newPictures: string[];
+  medal: Medal;
+  pictures: string[];
   selectOwner: Owner;
   owners: Owner[];
 
-  constructor(public navCtrl: NavController, private dataProvider: DataProvider, private viewCtrl: ViewController,  private camera: Camera) {
-    this.newMedal = new Medal();
-    this.getOwners();
+  constructor(public navCtrl: NavController, private navParams: NavParams, private dataProvider: DataProvider, private viewCtrl: ViewController,  private camera: Camera) {
+    this.medal = new Medal()
+  }
+
+  ionViewDidEnter() {
+    this.medal = new Medal()
+    this.pictures = new Array<string>()
+    this.getOwners()
+
+    if (this.navParams.get('medalId')) {
+      this.dataProvider.GetMedal(this.navParams.get('medalId'))
+      .then((medal) => {
+        this.medal = medal
+        console.log(this.medal)
+      })
+    }
   }
 
   options: CameraOptions = {
@@ -38,10 +51,7 @@ export class AddMedalPage {
   
   takePicture() {
     this.camera.getPicture(this.options).then((imageData) => {
-      var smallImage = <HTMLImageElement>document.getElementById('smallImage');
-      smallImage.style.display = 'block';
-      smallImage.src = "data:image/jpeg;base64," + imageData;
-      this.newPictures.push(imageData);
+      this.pictures.push(imageData);
      }, (err) => {
       // Handle error
      });
@@ -49,13 +59,13 @@ export class AddMedalPage {
 
   save() {
     this.dataProvider.AddMedal(
-      this.newMedal.name,
-      this.newMedal.description,
-      this.selectOwner.id
+      this.medal.name,
+      this.medal.description,
+      this.medal.ownerId
     ).then((medalId) => {
       var promises = [];
 
-      this.newPictures.forEach(picture => {
+      this.pictures.forEach(picture => {
         promises.push(
           this.dataProvider.AddPicture(picture, medalId)
         );
