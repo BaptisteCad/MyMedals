@@ -7,6 +7,7 @@ import { HomePage } from '../pages/home/home';
 import { MedalPage } from '../pages/medal/medal';
 import { AddMedalPage } from '../pages/addMedal/addMedal'
 import { PersonPage } from '../pages/person/person';
+import { OwnerThumbnail } from '../pages/person/thumbnailOwner'
 import { AddOwnerPage } from '../pages/addOwner/addOwner';
 import { TabsPage } from '../pages/tabs/tabs';
 
@@ -25,6 +26,7 @@ import { DataProvider } from '../services/dataProvider'
     MyApp,
     HomePage,
     PersonPage,
+    OwnerThumbnail,
     AddOwnerPage,
     MedalPage,
     AddMedalPage,
@@ -39,6 +41,7 @@ import { DataProvider } from '../services/dataProvider'
     MyApp,
     HomePage,
     PersonPage,
+    OwnerThumbnail,
     AddOwnerPage,
     MedalPage,
     AddMedalPage,

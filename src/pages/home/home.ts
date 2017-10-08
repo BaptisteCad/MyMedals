@@ -1,54 +1,33 @@
-import {Component} from '@angular/core';
-import {Platform} from 'ionic-angular';
+import { Component } from '@angular/core';
+import { Platform } from 'ionic-angular';
 
-import {NavController} from 'ionic-angular';
-import {DataProvider} from '../../services/dataProvider';
-@Component({selector: 'home', templateUrl: 'home.html'})
+import { NavController } from 'ionic-angular';
+import { DataProvider } from '../../services/dataProvider';
+
+// Components
+// import { OwnerThumbnail } from '../person/thumbnailOwner'
+
+// Models
+import { Owner } from '../../models/owner'
+
+@Component({ selector: 'home', templateUrl: 'home.html' })
 export class HomePage {
-  public todos = [];
-  public text : any;
-  constructor(public navCtrl : NavController, public sqliteService : DataProvider, protected platform : Platform) {
-    //First We need to ready the Platform
-    // this
-    //   .platform
-    //   .ready()
-    //   .then(() => {
-    //     this
-    //       .sqliteService
-    //       .getRows()
-    //       .then(s => {
-    //         this.todos = this.sqliteService.arr;
-    //       });
-    //   })
-  }
-  //Adding the Function
-  // add(i) {
-  //   this
-  //     .sqliteService
-  //     .addItem(i)
-  //     .then(s => {
-  //       this.todos = this.sqliteService.arr;
-  //       this.text = '';
-  //     });
-  // }
-  // //Deleting function
-  // delete(i) {
-  //   this
-  //     .sqliteService
-  //     .del(i)
-  //     .then(s => {
-  //       this.todos = this.sqliteService.arr;
-  //     });
-  // }
-  // //updating function
-  // update(id, todo) {
-  //   var prompt = window.prompt('Update', todo);
-  //   this
-  //     .sqliteService
-  //     .update(id, prompt)
-  //     .then(s => {
-  //       this.todos = this.sqliteService.arr;
-  //     });
-  // }
+  
+  owners: Owner[]
 
+  constructor(public navCtrl: NavController, public dataProvider: DataProvider, protected platform: Platform) {
+  }
+
+  ionViewDidEnter() {
+    this.platform.ready()
+    .then(() => {
+      this.getOwners()
+    })
+  }
+
+  getOwners() {
+    this.dataProvider.GetAllOwners().then((owners) => {
+      this.owners = owners
+    });
+  }
 }

@@ -33,6 +33,7 @@ export class AddMedalPage {
       this.dataProvider.GetMedal(this.navParams.get('medalId'))
       .then((medal) => {
         this.medal = medal
+        this.pictures = medal.pictures.map(function(pic) { return pic.image })
         console.log(this.medal)
       })
     }

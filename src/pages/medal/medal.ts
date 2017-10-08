@@ -20,24 +20,41 @@ export class MedalPage {
   ownerId: number;
   medals: Medal[];
 
-  constructor(public navCtrl: NavController, private navParams: NavParams, public modalCtrl: ModalController, private dataprovider: DataProvider) {
+  constructor(public navCtrl: NavController, private navParams: NavParams, public modalCtrl: ModalController, private dataProvider: DataProvider) {
   }
 
   ionViewDidEnter() {
     this.ownerId = this.navParams.get('ownerId')
     if (this.ownerId) {
-      this.dataprovider.GetMedalsByOwner(this.ownerId).then((medals) => {
+      this.dataProvider.GetMedalsByOwner(this.ownerId).then((medals) => {
         this.medals = medals;
       });
     } else {
-      this.dataprovider.GetAllMedals().then((medals) => {
-        this.medals = medals;
-      });
+      this.getMedals()
     }
   }
 
   presentAddMedalModal() {
     let addMedalModal = this.modalCtrl.create(AddMedalPage, {});
     addMedalModal.present();
+  }
+
+  getMedals() {
+    this.dataProvider.GetAllMedals().then((medals) => {
+      this.medals = medals;
+    });
+  }
+
+  delete(id: number) {
+    this.dataProvider.DeleteMedal(id).then(() => {
+      alert('Medal deleted')
+      this.getMedals()
+    })
+  }
+
+  update(id: number) {
+    this.navCtrl.push(AddMedalPage, {
+      medalId: id
+    });
   }
 }

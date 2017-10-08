@@ -53,11 +53,13 @@ export class DataProvider {
 
     public GetAllOwners(): Promise<Owner[]> {
         return new Promise((resolve, reject) => {
-            this.db.executeSql("select own_id, own_lastname, own_firstname, own_description, own_gender, own_mother, own_father from owners", []).then(
-                (result) => {
-                    resolve(this.DataToOwners(result));
-                }
-            );
+            this.OpenDataBase()
+            .then(() => {
+                this.db.executeSql("select own_id, own_lastname, own_firstname, own_description, own_gender, own_mother, own_father from owners", [])
+                .then((result) => {
+                    resolve(this.DataToOwners(result))
+                })
+            })
         });
     }
     
@@ -106,29 +108,27 @@ export class DataProvider {
 
     public GetAllMedals(): Promise<Medal[]> {
         return new Promise((resolve, reject) => {
-            this.db.executeSql("select med_id, med_name, med_description, med_owner, pic_id, pic_image from medals left outer join pictures on medals.med_id = pictures.pic_medal", []).then(
-                (result) => {
-                    resolve(this.DataToMedals(result));
-                }
-            )
+            this.db.executeSql("select med_id, med_name, med_description, med_owner, pic_id, pic_image from medals left outer join pictures on medals.med_id = pictures.pic_medal", [])
+            .then((result) => {
+                resolve(this.DataToMedals(result));
+            })
             .catch((e) => { alert(e.message) });
         });
     }
     
     public GetMedal(id: number): Promise<Medal> {
         return new Promise((resolve, reject) => {
-            this.db.executeSql("select med_id, med_name, med_description, med_owner, pic_id, pic_image from medals left outer join pictures on medals.med_id = pictures.pic_medal where medals.med_id = ?", [id]).then(
-                (result) => {
-                    resolve(this.DataToMedals(result)[0]);
-                }
-            )
+            this.db.executeSql("select med_id, med_name, med_description, med_owner, pic_id, pic_image from medals left outer join pictures on medals.med_id = pictures.pic_medal where medals.med_id = ?", [id])
+            .then((result) => {
+                resolve(this.DataToMedals(result)[0]);
+            })
             .catch((e) => { alert(e.message) });
         });
     }
 
     public GetMedalsByOwner(ownerId: number): Promise<Medal[]> {
         return new Promise((resolve, reject) => {
-            this.db.executeSql("select med_id, med_name, med_description, med_owner, pic_id, pic_image from medals left outer join pictures on medals.med_id = pictures.pic_medal where med_owner = ?", [ownerId]).then(
+            this.db.executeSql("select med_id, med_name, med_description, med_owner, pic_id, pic_image from medals left outer join pictures on medals.med_id = pictures.pic_medal where medals.med_owner = ?", [ownerId]).then(
                 (result) => {
                     resolve(this.DataToMedals(result));
                 }
@@ -137,12 +137,11 @@ export class DataProvider {
     }
 
     public AddMedal(name: string, description: string, owner: number) : Promise<number> {
-        var createdId: number;
         return new Promise((resolve, reject) => { 
             this.db.executeSql('INSERT INTO medals (med_name, med_description, med_owner) values (?,?,?)', [name, description, owner])
-            .then(() => {
-                console.log('Medal created');
-                resolve(createdId);
+            .then((result) => {
+                console.log('Medal created')
+                resolve(result.insertId)
             })
             .catch((e) => {
                 console.log(e);
@@ -151,12 +150,30 @@ export class DataProvider {
         });
     }
 
+    
+    
+    public DeleteMedal(id: number): Promise<void> {
+        return this.db.executeSql('DELETE FROM medals WHERE med_id = ?', [id])
+        .then(() => {
+            console.log("Medal deleted")
+        })
+        .catch(e => console.log(e));
+    }
+
     public AddPicture(image: string, medal: number): Promise<void> {
         return this.db.executeSql('INSERT INTO pictures (pic_image, pic_medal) values (?,?)', [image, medal])
         .then(() => {
             console.log('Picture saved')
         })
         .catch(e => console.log(e));
+    }
+
+    public DeletePicture(id: number): Promise<void> {
+        return this.db.executeSql('DELETE FROM pictures WHERE pic_id = ?', [id])
+        .then(() => {
+            console.log('Picutre deleted')
+        })
+        .catch(e => console.log(e))
     }
 
     private DataToMedals(result): Medal[] {
@@ -171,16 +188,25 @@ export class DataProvider {
                     description: result.rows.item(i).med_description,
                     ownerId: result.rows.item(i).med_owner,
                     pictures: new Array<Picture>()
-                };
+                }
+                console.log(result.rows.item(i))
+                if (result.rows.item(i).pic_id) {
+                    medal.pictures.push( {
+                        id: result.rows.item(i).pic_id,
+                        image: result.rows.item(i).pic_image,
+                        medalId: result.rows.item(i).med_id
+                    });
+                }
+                console.log(medal)
                 medals.push(medal);
-            }
-            
-            if (result.rows.item(i).pic_id) {
-                medal.pictures.push( {
-                    id: result.rows.item(i).pic_id,
-                    image: result.rows.item(i).pic_id,
-                    medalId: result.rows.item(i).med_id
-                });
+            } else {
+                if (result.rows.item(i).pic_id) {
+                    medal.pictures.push( {
+                        id: result.rows.item(i).pic_id,
+                        image: result.rows.item(i).pic_image,
+                        medalId: result.rows.item(i).med_id
+                    });
+                }
             }
         }
         return medals;
