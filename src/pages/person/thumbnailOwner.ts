@@ -15,6 +15,8 @@ export class OwnerThumbnail {
     private _id: number;
     private _owners: Owner[];
     owner: Owner
+    isLoaded: boolean
+
     
     @Input()
     set id(id: number) {
@@ -34,12 +36,21 @@ export class OwnerThumbnail {
     }
 
     constructor(public dataProvider: DataProvider) {
+        this.isLoaded = false
     }
 
-    ionViewDidEnter() {
-        console.log('ionVoewDidEnter ' + this._id)
-        let ownerId = this._id
-        this.owner = this._owners.find(function (o) { return o.id == ownerId })
-        console.log(this.owner)
+    ngOnChanges() {
+        console.log('ngOnChanges ' + this._id)
+        if (this._owners) {
+            let ownerId = this._id
+            this.owner = this._owners.find(function (o) { return o.id == ownerId })
+            console.log(this.owner)
+        }
+    }
+
+    ngDoCheck() {
+        if (this.owner && this.owner.id !== 0){
+            this.isLoaded = true
+        }
     }
 }
