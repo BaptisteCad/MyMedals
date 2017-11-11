@@ -10,3 +10,7 @@ export class Owner{
     mother: number;
     medals: Medal[];
 }
+
+export class OwnerViewModel extends Owner {
+    isLoaded: boolean = false;
+}

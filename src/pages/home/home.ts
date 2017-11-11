@@ -8,12 +8,12 @@ import { DataProvider } from '../../services/dataProvider';
 // import { OwnerThumbnail } from '../person/thumbnailOwner'
 
 // Models
-import { Owner } from '../../models/owner'
+import { OwnerViewModel } from '../../models/owner'
 
 @Component({ selector: 'home', templateUrl: 'home.html' })
 export class HomePage {
   
-  owners: Owner[]
+  owners: OwnerViewModel[]
 
   constructor(public navCtrl: NavController, public dataProvider: DataProvider, protected platform: Platform) {
   }
@@ -27,7 +27,7 @@ export class HomePage {
 
   getOwners() {
     this.dataProvider.GetAllOwners().then((owners) => {
-      this.owners = owners
+      this.owners = <OwnerViewModel[]>owners
     });
   }
 }

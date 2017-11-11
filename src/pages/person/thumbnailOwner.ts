@@ -4,7 +4,7 @@ import { Component, Input } from '@angular/core';
 import { DataProvider } from '../../services/dataProvider'
 
 // Models
-import { Owner } from '../../models/owner'
+import { Owner, OwnerViewModel } from '../../models/owner'
 
 @Component({
   selector: 'thumbnail-owner',
@@ -13,9 +13,10 @@ import { Owner } from '../../models/owner'
 export class OwnerThumbnail {
 
     private _id: number;
-    private _owners: Owner[];
+    private _owners: OwnerViewModel[];
     owner: Owner
     isLoaded: boolean
+    brothers: OwnerViewModel[]
 
     
     @Input()
@@ -28,7 +29,7 @@ export class OwnerThumbnail {
     }
 
     @Input()
-    set owners(owners: Owner[]) {
+    set owners(owners: OwnerViewModel[]) {
         this._owners = owners
     }
     get owners() {
@@ -40,11 +41,25 @@ export class OwnerThumbnail {
     }
 
     ngOnChanges() {
-        console.log('ngOnChanges ' + this._id)
+        // console.log('ngOnChanges ' + this._id)
         if (this._owners) {
             let ownerId = this._id
             this.owner = this._owners.find(function (o) { return o.id == ownerId })
-            console.log(this.owner)
+            if (this.owner === null){
+                this._owners.find(function (o) { return o.id == ownerId }).isLoaded = true
+            }
+            let fatherId = this.owner.father
+            // console.log('fatherId : ' + fatherId)
+            let motherId = this.owner.mother
+            // console.log('motherId : ' + motherId)
+            if (motherId !== 0 || fatherId !== 0) {
+                this.brothers = this._owners.filter(function (own) { return own.father === fatherId && own.mother === motherId && own.id !== ownerId})
+            } else {
+                this.brothers = new Array<OwnerViewModel>()
+            }
+            this.brothers.push(<OwnerViewModel>this.owner)
+            // console.log('brothers : ')
+            // console.log(this.brothers)
         }
     }
 
