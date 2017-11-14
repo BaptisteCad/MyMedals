@@ -65,7 +65,8 @@ export class OwnerThumbnail {
 
     ngDoCheck() {
         if (this.owner && this.owner.id !== 0){
-            this.isLoaded = true
+            let alreadyExists = document.getElementById('tn_owner_' + this.owner.id) !== undefined
+            this.isLoaded = alreadyExists && true
         }
     }
 }

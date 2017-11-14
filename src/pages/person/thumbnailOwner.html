@@ -5,7 +5,7 @@
 </div>
 
 <div *ngIf="isLoaded" class="brotherhood">
-    <div class="thumbnail" *ngFor="let brother of brothers">
+    <div class="thumbnail" *ngFor="let brother of brothers" id="tn_owner_{{brother.id}}">
         nom: {{brother.lastname}} {{brother.firstname}}
     </div>
 </div>
