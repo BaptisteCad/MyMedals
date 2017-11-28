@@ -8,8 +8,28 @@ import { Owner, OwnerViewModel } from '../../models/owner'
 
 @Component({
   selector: 'thumbnail-owner',
-  templateUrl: 'thumbnailOwner.html'
+  template: `
+  <div class="parents">
+    <thumbnail-owner class="mother" *ngIf="isLoaded && owner.mother !== 0" [id]="owner.mother" [owners]="owners"></thumbnail-owner>
+    <thumbnail-owner class="father" *ngIf="isLoaded && owner.father !== 0" [id]="owner.father" [owners]="owners"></thumbnail-owner>
+  </div>
+
+  <div *ngIf="isLoaded" class="brotherhood">
+    <div *ngFor="let brother of brothers; let first = first;" id="tn_owner_{{brother.id}}">
+      <div *ngIf="!first" class="barre"></div>
+      <div class="thumbnail">
+        nom: {{brother.lastname}} {{brother.firstname}}
+      </div>
+    </div>
+  </div>`,
+  styles: [
+    '.brotherhood { clear: both; }',
+    '.barre {height:3px; background-color:#000; width:10px; text-align: center; float: left; margin: auto;}',
+    '.thumbnail {width: 100px; height: 100px; border: solid grey 1px; color: red; float: left; margin-left: 20px; margin-top: 20px;}',
+    '.mother, .father {float: left;}',
+    '.father {margin-left: 10px;}']
 })
+
 export class OwnerThumbnail {
 
     private _id: number;
@@ -21,7 +41,6 @@ export class OwnerThumbnail {
     
     @Input()
     set id(id: number) {
-    // Here you can do what you want with the variable
         this._id = id;
     }
     get id() {
