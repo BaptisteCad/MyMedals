@@ -13,6 +13,7 @@ const DATABASE_NAME: string = "myMedals.db";
 export class DataProvider {
 
     public db = null;
+    private deleteAll = true;
     
     constructor(public sqlite: SQLite, platform: Platform) {
         platform.ready().then(() => {
@@ -35,6 +36,13 @@ export class DataProvider {
         console.log('Create DB');
         this.OpenDataBase()
         .then(() => {
+            if (this.deleteAll){
+                this.db.executeSql('DROP TABLE Pictures', [])
+                this.db.executeSql('DROP TABLE medals', [])
+                this.db.executeSql('DROP TABLE owners', [])
+            }
+        })
+        .then(() => {
             this.db.executeSql('CREATE TABLE IF NOT EXISTS medals (med_id integer primary key autoincrement, med_name text, med_description text, med_owner integer)', [])
         })
         .then(() => {
@@ -47,6 +55,11 @@ export class DataProvider {
         })
         .then(() => {
             console.log('Table Pictures created');
+            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (1, "cadilhac", "martine", "maman", "F", 0, 0)', [])
+            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (2, "cadilhac", "françois", "papa", "M", 0, 0)', [])
+            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (3, "cadilhac", "baptiste", "moi", "M", 2, 1)', [])
+            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (4, "cadilhac", "vincent", "frère", "M", 2, 1)', [])
+            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (5, "cadilhac", "anne-so", "soeur", "F", 2, 1)', [])
         })
         .catch(e => console.log(e));
     }
