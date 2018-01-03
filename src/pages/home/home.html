@@ -7,6 +7,12 @@
 </ion-header>
 
 <ion-content padding>
-  <thumbnail-owner [id]=1 [owners]="owners">
+  <thumbnail-owner [id]=4 [owners]="owners" [partners]="partners" [brothers]="brothers">
   </thumbnail-owner>
+  <!-- <span *ngFor="let brother of owners; let first = first;" id="tn_owner_{{brother.id}}"
+    class="">
+    <div class="thumbnail">
+      {{brother.firstname}}
+    </div>
+  </span> -->
 </ion-content>

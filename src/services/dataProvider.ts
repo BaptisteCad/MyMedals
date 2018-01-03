@@ -6,6 +6,8 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
 import { Owner } from '../models/owner'
 import { Medal } from '../models/medal'
 import { Picture } from '../models/picture'
+import { Partner } from '../models/partner'
+import { Brother } from '../models/brother'
 
 const DATABASE_NAME: string = "myMedals.db";
 
@@ -37,9 +39,14 @@ export class DataProvider {
         this.OpenDataBase()
         .then(() => {
             if (this.deleteAll){
-                this.db.executeSql('DROP TABLE Pictures', [])
+                console.log('drop tables')
+                this.db.executeSql('DROP TABLE parents', [])
+                this.db.executeSql('DROP TABLE partners', [])
+                this.db.executeSql('DROP TABLE brothers', [])
+                this.db.executeSql('DROP TABLE pictures', [])
                 this.db.executeSql('DROP TABLE medals', [])
                 this.db.executeSql('DROP TABLE owners', [])
+                this.deleteAll = false
             }
         })
         .then(() => {
@@ -51,15 +58,30 @@ export class DataProvider {
         })
         .then(() => {
             console.log('Table Owners created');
-            this.db.executeSql('CREATE TABLE IF NOT EXISTS pictures (pic_id integer primary key autoincrement, pic_medal number, pic_image blob)', [])
+            this.db.executeSql('CREATE TABLE IF NOT EXISTS pictures (pic_id integer primary key autoincrement, pic_medal integer, pic_image blob)', [])
         })
         .then(() => {
             console.log('Table Pictures created');
-            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (1, "cadilhac", "martine", "maman", "F", 0, 0)', [])
-            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (2, "cadilhac", "françois", "papa", "M", 0, 0)', [])
-            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (3, "cadilhac", "baptiste", "moi", "M", 2, 1)', [])
-            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (4, "cadilhac", "vincent", "frère", "M", 2, 1)', [])
-            this.db.executeSql('INSERT INTO owners (own_id integer primary key autoincrement, own_lastname text, own_firstname text, own_description text, own_gender text, own_father integer, own_mother integer) VALUES (5, "cadilhac", "anne-so", "soeur", "F", 2, 1)', [])
+            this.db.executeSql('CREATE TABLE IF NOT EXISTS brothers (bro_id integer primary key autoincrement, bro_one integer, bro_other integer)', [])
+        })
+        .then(() => {
+            console.log('Table Brothers created');
+            this.db.executeSql('CREATE TABLE IF NOT EXISTS partners (par_id integer primary key autoincrement, par_one integer, par_other integer)', [])
+        })
+        .then(() => {
+            console.log('Table Partners created');
+            this.db.executeSql('INSERT INTO owners (own_id, own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) VALUES (1, "cadilhac", "martine", "maman", "F", 0, 0)', [])
+            this.db.executeSql('INSERT INTO owners (own_id, own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) VALUES (2, "cadilhac", "françois", "papa", "M", 0, 0)', [])
+            this.db.executeSql('INSERT INTO owners (own_id, own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) VALUES (3, "cadilhac", "baptiste", "moi", "M", 2, 1)', [])
+            this.db.executeSql('INSERT INTO owners (own_id, own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) VALUES (4, "cadilhac", "vincent", "frère", "M", 2, 1)', [])
+            this.db.executeSql('INSERT INTO owners (own_id, own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) VALUES (5, "cadilhac", "anne-so", "soeur", "F", 2, 1)', [])
+        })
+        .then(() => {
+            this.db.executeSql('INSERT INTO brothers (bro_id, bro_one, bro_other) VALUES (1, 3, 4)', [])
+            this.db.executeSql('INSERT INTO brothers (bro_id, bro_one, bro_other) VALUES (1, 4, 5)', [])
+        })
+        .then(() => {
+            this.db.executeSql('INSERT INTO partners (par_id, par_one, par_other) VALUES (1, 2, 1)', [])
         })
         .catch(e => console.log(e));
     }
@@ -187,6 +209,49 @@ export class DataProvider {
             console.log('Picutre deleted')
         })
         .catch(e => console.log(e))
+    }
+
+    public GetAllPartners(): Promise<Partner[]> {
+        return new Promise((resolve, reject) => {
+            this.OpenDataBase()
+            .then(() => {
+                this.db.executeSql("select par_id, par_one, par_other from partners", [])
+                .then((result) => {
+                    var partners = new Array<Partner>();
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var partner = {
+                            id: result.rows.item(i).par_id,
+                            one: result.rows.item(i).par_one,
+                            other: result.rows.item(i).par_other
+                        }
+                        partners.push(partner);
+                    }
+                    return partners;
+                })
+            })
+        });
+    }
+    
+    public GetAllBrothers(): Promise<Brother[]> {
+        return new Promise((resolve, reject) => {
+            this.OpenDataBase()
+            .then(() => {
+                this.db.executeSql("select bro_id, bro_one, bro_other from brothers", [])
+                .then((result) => {
+                    var brothers = new Array<Brother>();
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var brother = {
+                            id: result.rows.item(i).bro_id,
+                            one: result.rows.item(i).bro_one,
+                            other: result.rows.item(i).bro_other
+                        }
+                        brothers.push(brother);
+                    }
+                    console.log(brothers)
+                    return brothers;
+                })
+            })
+        });
     }
 
     private DataToMedals(result): Medal[] {

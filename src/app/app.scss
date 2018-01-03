@@ -14,3 +14,9 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+
+.brotherhood { clear: both; }
+.thumbnail {width: 60px; height: 50px; border: solid grey 1px; color: red; float: left; margin-left: 20px; margin-top: 20px;}
+.mother, .father {float: left;}
+.father {margin-left: 10px;}
