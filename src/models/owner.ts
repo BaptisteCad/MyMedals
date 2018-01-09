@@ -14,3 +14,11 @@ export class Owner{
 export class OwnerViewModel extends Owner {
     isLoaded: boolean = false;
 }
+
+export class OwnerTree extends Owner {
+    motherOwner: OwnerTree;
+    fatherOwner: OwnerTree;
+    brothers: OwnerTree[];
+    children: OwnerTree[];
+    partner: OwnerTree;
+}
