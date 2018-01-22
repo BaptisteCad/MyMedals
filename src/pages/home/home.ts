@@ -64,17 +64,33 @@ export class HomePage {
   constructTree(owners: OwnerTree[]) {
     let tree = new OwnerTree();
 
-    let ancestors = owners.filter(function (owner) { return owner.father === 0 && owner.mother === 0; });
-    ancestors.forEach(ancestor => {
-      tree.children.push(ancestor);
-      owners.splice(owners.indexOf(ancestor), 1);
-    })
+    // let ancestors = owners.filter(function (owner) { return owner.father === 0 && owner.mother === 0; });
+    // ancestors.forEach(ancestor => {
+    //   tree.children.push(ancestor);
+    //   owners.splice(owners.indexOf(ancestor), 1);
+    // })
 
-    while(owners.length > 0) {
-      owners.forEach(own => {
-        tree.
-      });
+    // while(owners.length > 0) {
+    //   owners.forEach(own => {
+    //     tree.
+    //   });
+    // }
+
+    var map = {}, node, roots = [], i;
+    for (i = 0; i < owners.length; i += 1) {
+        map[owners[i].id] = i; // initialize the map
+        owners[i].children = []; // initialize the children
     }
+    for (i = 0; i < owners.length; i += 1) {
+        node = owners[i];
+        if (node.parentId !== "0") {
+            // if you have dangling branches check that map[node.parentId] exists
+            owners[map[node.parentId]].children.push(node);
+        } else {
+            roots.push(node);
+        }
+    }
+    console.log(roots);
   }
 
   list_to_tree(list) {
