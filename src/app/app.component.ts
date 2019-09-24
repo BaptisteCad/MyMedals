@@ -22,6 +22,7 @@ export class MyApp {
       splashScreen.hide();
 
       dataProvider.CreateDataBase();
-    });
+    })
+    .catch(e => console.log(e));
   }
 }

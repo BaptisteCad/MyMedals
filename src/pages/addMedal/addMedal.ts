@@ -36,6 +36,7 @@ export class AddMedalPage {
         this.pictures = medal.pictures.map(function(pic) { return pic.image })
         console.log(this.medal)
       })
+      .catch(e => console.log(e))
     }
   }
 
@@ -75,12 +76,14 @@ export class AddMedalPage {
       Promise.all(promises).then(() => {
         console.log('all pictures saved');
       })
+      .catch(e => console.log(e))
     });
   }
 
   getOwners() {
     this.dataProvider.GetAllOwners().then((owners) => {
       this.owners = owners;
-    });
+    })
+    .catch(e => console.log(e));
   }
 }

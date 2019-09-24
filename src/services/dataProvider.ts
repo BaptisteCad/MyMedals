@@ -20,7 +20,8 @@ export class DataProvider {
     constructor(public sqlite: SQLite, platform: Platform) {
         platform.ready().then(() => {
             this.OpenDataBase();
-        });
+        })
+        .catch(e => console.log(e));
     }
 
     private OpenDataBase(): Promise<void> {
@@ -77,13 +78,23 @@ export class DataProvider {
             this.db.executeSql('INSERT INTO owners (own_id, own_lastname, own_firstname, own_description, own_gender, own_father, own_mother) VALUES (5, "cadilhac", "anne-so", "soeur", "F", 2, 1)', [])
         })
         .then(() => {
+            console.log('Table Owners populated');
             this.db.executeSql('INSERT INTO brothers (bro_id, bro_one, bro_other) VALUES (1, 3, 4)', [])
             this.db.executeSql('INSERT INTO brothers (bro_id, bro_one, bro_other) VALUES (1, 4, 5)', [])
         })
         .then(() => {
+            console.log('Table Brothers populated');
             this.db.executeSql('INSERT INTO partners (par_id, par_one, par_other) VALUES (1, 2, 1)', [])
         })
-        .catch(e => console.log(e));
+        .then(() => {
+            console.log('Table Partners populated');
+        })
+        .catch((e) => {
+            console.log('catch error')
+            console.log(e)
+        });
+
+        console.log('end create database')
     }
 
     public GetAllOwners(): Promise<Owner[]> {
@@ -94,7 +105,9 @@ export class DataProvider {
                 .then((result) => {
                     resolve(this.DataToOwners(result))
                 })
+                .catch(e => console.log(e))
             })
+            .catch(e => console.log(e));
         });
     }
     
@@ -113,7 +126,8 @@ export class DataProvider {
                         medals: new Array<Medal>()
                     });
                 }
-            );
+            )
+            .catch(e => console.log(e));
         });
     }
 
@@ -167,7 +181,8 @@ export class DataProvider {
                 (result) => {
                     resolve(this.DataToMedals(result));
                 }
-            );
+            )
+            .catch(e => console.log(e));
         });
     }
 
@@ -226,9 +241,11 @@ export class DataProvider {
                         }
                         partners.push(partner);
                     }
-                    return partners;
+                    resolve(partners);
                 })
+                .catch(e => console.log(e))
             })
+            .catch(e => console.log(e))
         });
     }
     
@@ -250,7 +267,9 @@ export class DataProvider {
                     console.log(brothers)
                     return brothers;
                 })
+                .catch(e => console.log(e))
             })
+            .catch(e => console.log(e))
         });
     }
 

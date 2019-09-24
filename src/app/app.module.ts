@@ -4,12 +4,12 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 import { HomePage } from '../pages/home/home';
-import { MedalPage } from '../pages/medal/medal';
-import { AddMedalPage } from '../pages/addMedal/addMedal'
-import { PersonPage } from '../pages/person/person';
-import { OwnerThumbnail } from '../pages/person/thumbnailOwner'
-import { AddOwnerPage } from '../pages/addOwner/addOwner';
-import { TabsPage } from '../pages/tabs/tabs';
+// import { MedalPage } from '../pages/medal/medal';
+// import { AddMedalPage } from '../pages/addMedal/addMedal'
+// import { PersonPage } from '../pages/person/person';
+// import { OwnerThumbnail } from '../pages/person/thumbnailOwner'
+// import { AddOwnerPage } from '../pages/addOwner/addOwner';
+// import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -25,12 +25,12 @@ import { DataProvider } from '../services/dataProvider'
   declarations: [
     MyApp,
     HomePage,
-    PersonPage,
-    OwnerThumbnail,
-    AddOwnerPage,
-    MedalPage,
-    AddMedalPage,
-    TabsPage
+    // PersonPage,
+    // OwnerThumbnail,
+    // AddOwnerPage,
+    // MedalPage,
+    // AddMedalPage,
+    // TabsPage
   ],
   imports: [
     BrowserModule,
@@ -40,12 +40,12 @@ import { DataProvider } from '../services/dataProvider'
   entryComponents: [
     MyApp,
     HomePage,
-    PersonPage,
-    OwnerThumbnail,
-    AddOwnerPage,
-    MedalPage,
-    AddMedalPage,
-    TabsPage
+    // PersonPage,
+    // OwnerThumbnail,
+    // AddOwnerPage,
+    // MedalPage,
+    // AddMedalPage,
+    // TabsPage
   ],
   providers: [
     StatusBar,
